@@ -8,8 +8,8 @@ dotenv.config();
  * Previene el uso de "process.env" disperso por todo el código y provee valores por defecto.
  */
 export const entorno = {
-    // Puerto de la aplicación (la nube suele inyectar PORT)
-    puerto: process.env.PORT || process.env.PUERTO || 3000,
+    // Puerto donde se levantará el servicio
+    puerto: process.env.PORT || 3000,
     
     // Lista de orígenes permitidos para la política CORS
     corsOrigenesPermitidos: process.env.CORS_ORIGENES_PERMITIDOS 
