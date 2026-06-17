@@ -1,8 +1,49 @@
 import libre from 'libreoffice-convert';
+import os from 'os';
 
-// Creamos un wrapper manual en lugar de usar util.promisify para evitar el
-// DeprecationWarning de Node, ya que la librería retorna una promesa internamente
-// pero a la vez exige un callback obligatoriamente.
+/**
+ * ========================================================
+ * SISTEMA DE COLA (QUEUE) PARA LIBREOFFICE
+ * ========================================================
+ * LibreOffice es muy pesado. Si llegan 100 peticiones a la vez, 
+ * Node intentará abrir 100 procesos "soffice.bin" colapsando el servidor 
+ * (Out of Memory o 100% CPU).
+ * Este sistema limita la concurrencia protegiendo el host (Windows Server).
+ */
+
+// Si tiene 4 núcleos, usa 3 para conversión y deja 1 para Node y el OS.
+const limiteConcurrencia = Math.max(1, os.cpus().length - 1); 
+let tareasActivas = 0;
+const colaDeEspera = [];
+
+const encolarConversion = (tarea) => {
+    return new Promise((resolve, reject) => {
+        colaDeEspera.push(async () => {
+            try {
+                const resultado = await tarea();
+                resolve(resultado);
+            } catch (error) {
+                reject(error);
+            } finally {
+                tareasActivas--;
+                procesarSiguiente();
+            }
+        });
+        
+        // Si no hemos llegado al límite, arrancamos la tarea recién encolada
+        procesarSiguiente();
+    });
+};
+
+const procesarSiguiente = () => {
+    if (tareasActivas < limiteConcurrencia && colaDeEspera.length > 0) {
+        tareasActivas++;
+        const siguienteTarea = colaDeEspera.shift();
+        siguienteTarea();
+    }
+};
+
+// Wrapper manual de la librería base
 const convertirAsync = (buffer, formato, filtro) => {
     return new Promise((resolve, reject) => {
         libre.convert(buffer, formato, filtro, (error, documentoConvertido) => {
@@ -16,7 +57,7 @@ const convertirAsync = (buffer, formato, filtro) => {
 
 /**
  * Servicio de Infraestructura: Convertidor LibreOffice
- * Adaptador que implementa el motor real de conversión utilizando LibreOffice de forma local.
+ * Adaptador que implementa el motor real de conversión local, protegido por Cola.
  */
 export class ConvertidorLibreOffice {
     /**
@@ -27,11 +68,10 @@ export class ConvertidorLibreOffice {
      */
     async convertir(documentoBuffer, formatoDestino) {
         try {
-            // El formato sin el punto, ya que libreoffice-convert lo prefiere así en la mayoría de los casos
             const extension = formatoDestino.replace('.', '');
             
-            // Ejecutamos la conversión
-            const pdfBuffer = await convertirAsync(documentoBuffer, extension, undefined);
+            // Aquí entra la magia: en lugar de ejecutar crudo, lo pasamos por la cola
+            const pdfBuffer = await encolarConversion(() => convertirAsync(documentoBuffer, extension, undefined));
             
             return pdfBuffer;
         } catch (error) {
