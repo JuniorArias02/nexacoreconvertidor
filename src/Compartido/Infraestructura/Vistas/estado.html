@@ -230,9 +230,7 @@
     <!-- Cliente oficial de Socket.IO desde CDN para evadir proxys/firewalls de MikroTik -->
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script>
-        const socket = io({
-            transports: ['websocket']
-        });
+        const socket = io();
 
         // Escucha evento de conexión
         socket.on('connect', () => {

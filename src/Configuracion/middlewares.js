@@ -15,6 +15,7 @@ export const configurarMiddlewares = (aplicacion) => {
             directives: {
                 ...helmet.contentSecurityPolicy.getDefaultDirectives(),
                 "script-src": ["'self'", "'unsafe-inline'", "https://cdn.socket.io"],
+                "upgrade-insecure-requests": null,
             },
         },
     }));
