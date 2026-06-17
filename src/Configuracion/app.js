@@ -25,9 +25,4 @@ aplicacion.get('/api/state', EstadoControlador.obtenerVista);
 // Endpoint de datos para la telemetría (Health Check Backend JSON)
 aplicacion.get('/api/state/data', EstadoControlador.obtenerDatos);
 
-// Endpoint interno para proveer el cliente WebSocket evadiendo bloqueos de router y CDNs
-aplicacion.get('/api/recursos/socket.js', (req, res) => {
-    res.sendFile(path.join(process.cwd(), 'node_modules', 'socket.io', 'client-dist', 'socket.io.min.js'));
-});
-
 export default aplicacion;
