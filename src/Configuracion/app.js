@@ -17,7 +17,10 @@ configurarDocumentacion(aplicacion);
 // Si agregas más módulos en el futuro, importa sus rutas aquí.
 aplicacion.use('/api', rutasConvertidor);
 
-// Endpoint visual de estado del servidor (Health Check UI)
-aplicacion.get('/api/state', EstadoControlador.obtenerEstado);
+// Endpoint visual de estado del servidor (Health Check Frontend)
+aplicacion.get('/api/state', EstadoControlador.obtenerVista);
+
+// Endpoint de datos para la telemetría (Health Check Backend JSON)
+aplicacion.get('/api/state/data', EstadoControlador.obtenerDatos);
 
 export default aplicacion;

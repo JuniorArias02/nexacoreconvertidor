@@ -9,7 +9,15 @@ import { middlewareCors } from './cors.js';
  */
 export const configurarMiddlewares = (aplicacion) => {
     // 1. Helmet: Protege la app configurando varios encabezados HTTP de seguridad
-    aplicacion.use(helmet());
+    // Relajamos ligeramente las políticas de scripts para permitir nuestro HTML desacoplado (telemetría)
+    aplicacion.use(helmet({
+        contentSecurityPolicy: {
+            directives: {
+                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                "script-src": ["'self'", "'unsafe-inline'"],
+            },
+        },
+    }));
 
     // 2. CORS: Restringe los dominios permitidos
     aplicacion.use(middlewareCors);
