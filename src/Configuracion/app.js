@@ -17,6 +17,9 @@ configurarDocumentacion(aplicacion);
 // Si agregas más módulos en el futuro, importa sus rutas aquí.
 aplicacion.use('/api', rutasConvertidor);
 
+import rutasHerramientasPdf from '../HerramientasPdf/Infraestructura/Rutas/rutasHerramientasPdf.js';
+aplicacion.use('/api/herramientas-pdf', rutasHerramientasPdf);
+
 import path from 'path';
 
 // Endpoint visual de estado del servidor (Health Check Frontend)
