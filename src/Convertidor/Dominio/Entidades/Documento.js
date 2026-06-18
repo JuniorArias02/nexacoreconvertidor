@@ -4,11 +4,12 @@
  * los atributos esenciales requeridos para cualquier operación.
  */
 export class Documento {
-    constructor({ nombreOriginal, buffer, mimetype, tamanio }) {
+    constructor({ nombreOriginal, buffer, mimetype, tamanio, extensionesValidas = ['.xlsx', '.xls'] }) {
         this.nombreOriginal = nombreOriginal;
         this.buffer = buffer;
         this.mimetype = mimetype;
         this.tamanio = tamanio;
+        this.extensionesValidas = extensionesValidas;
 
         this.validar();
     }
@@ -22,9 +23,11 @@ export class Documento {
             throw new Error('El documento debe tener un nombre original.');
         }
 
-        // Validación simple de extensiones (se puede extender o ser más estricta según el negocio)
-        if (!this.nombreOriginal.endsWith('.xlsx') && !this.nombreOriginal.endsWith('.xls')) {
-            throw new Error('El archivo proporcionado no es un formato de Excel válido (.xlsx o .xls).');
+        // Validación simple de extensiones
+        const extensionValida = this.extensionesValidas.some(ext => this.nombreOriginal.toLowerCase().endsWith(ext));
+        
+        if (!extensionValida) {
+            throw new Error(`El archivo proporcionado no tiene un formato válido. Formatos aceptados: ${this.extensionesValidas.join(', ')}.`);
         }
     }
 

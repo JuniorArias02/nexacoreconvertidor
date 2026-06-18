@@ -45,9 +45,38 @@ const especificacionSwagger = swaggerJsdoc(opcionesSwagger);
  * @param {import('express').Express} aplicacion 
  */
 export const configurarDocumentacion = (aplicacion) => {
+    // CSS Personalizado para un look "Ultra-Premium" y convertir el link de descarga en botón
+    const estiloPersonalizado = `
+        .swagger-ui .topbar { display: none !important; }
+        .swagger-ui .info .title { color: #1e40af !important; font-weight: 800 !important; font-family: sans-serif; }
+        .swagger-ui .btn.execute { background-color: #2563eb !important; border-color: #2563eb !important; color: white !important; font-weight: bold !important; border-radius: 8px !important; box-shadow: 0 4px 6px rgba(37,99,235,0.2) !important; }
+        .swagger-ui .btn.execute:hover { background-color: #1d4ed8 !important; transform: translateY(-1px); }
+        .swagger-ui .opblock.opblock-post { border-radius: 12px; border-color: rgba(37,99,235,0.3); background: rgba(37,99,235,0.03); }
+        .swagger-ui .opblock.opblock-post .opblock-summary-method { background: #2563eb; border-radius: 6px; }
+        
+        /* Estilizar el enlace "Download file" para que sea un botón verde bonito */
+        .swagger-ui .download-contents, .swagger-ui a[download] { 
+            background-color: #10b981 !important; 
+            color: #ffffff !important; 
+            padding: 10px 20px !important; 
+            border-radius: 8px !important; 
+            text-decoration: none !important; 
+            font-weight: 600 !important; 
+            display: inline-block !important; 
+            margin-top: 10px !important;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3) !important;
+            transition: all 0.2s ease-in-out !important;
+            font-family: sans-serif;
+        }
+        .swagger-ui .download-contents:hover, .swagger-ui a[download]:hover {
+            background-color: #059669 !important;
+            transform: translateY(-2px) !important;
+        }
+    `;
+
     // Montar la interfaz interactiva de Swagger en la ruta /api/docs
     aplicacion.use('/api/docs', swaggerUi.serve, swaggerUi.setup(especificacionSwagger, {
-        customCss: '.swagger-ui .topbar { display: none }', // Para ocultar la barra verde superior de Swagger si deseas un look más limpio
+        customCss: estiloPersonalizado,
         customSiteTitle: "NexaCore API Docs"
     }));
     
