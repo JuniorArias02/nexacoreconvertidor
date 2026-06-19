@@ -1,5 +1,6 @@
 import libre from 'libreoffice-convert';
 import os from 'os';
+import fs from 'fs';
 
 /**
  * ========================================================
@@ -46,7 +47,31 @@ const procesarSiguiente = () => {
 // Wrapper manual de la librería base
 const convertirAsync = (buffer, formato, filtro) => {
     return new Promise((resolve, reject) => {
-        libre.convert(buffer, formato, filtro, (error, documentoConvertido) => {
+        let options = {
+            execOptions: {
+                timeout: 120000, // 2 Minutos máximo para que LibreOffice responda
+                killSignal: 'SIGKILL' // Si LibreOffice se cuelga, lo matamos de raíz
+            }
+        };
+        const tempDirCustom = process.env.LIBREOFFICE_TEMP_DIR;
+
+        // Si se configuró un directorio temporal para LibreOffice en el .env, lo utilizamos.
+        if (tempDirCustom) {
+            if (!fs.existsSync(tempDirCustom)) {
+                fs.mkdirSync(tempDirCustom, { recursive: true });
+            }
+            options.tmpOptions = {
+                dir: tempDirCustom
+            };
+            options.execOptions.env = {
+                ...process.env,
+                TEMP: tempDirCustom,
+                TMP: tempDirCustom,
+                TMPDIR: tempDirCustom
+            };
+        }
+
+        libre.convertWithOptions(buffer, formato, filtro, options, (error, documentoConvertido) => {
             if (error) {
                 return reject(error);
             }

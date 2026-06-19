@@ -64,6 +64,18 @@ npm run config:port 8192
 
 ---
 
+## 💾 4. GESTIÓN DE RECURSOS Y ARCHIVOS TEMPORALES
+
+LibreOffice puede saturar el disco principal (C:) durante conversiones pesadas si se llena la carpeta temporal. Para evitar el error `ENOSPC`, se recomienda usar otro disco (Ej: `F:`).
+
+### Cambiar Directorio Temporal
+Configura una nueva ruta para los archivos de conversión y perfiles temporales de LibreOffice.
+```bash
+npm run config:tempdir "F:\temp_node"
+```
+
+---
+
 > **⚠️ RECORDATORIO CRÍTICO:**
 > Las variables de entorno son cargadas en la memoria (RAM) al iniciar Node.js. 
-> Siempre que ejecutes un comando para **Generar/Eliminar Tokens, Cambiar Puertos o Modificar CORS**, DEBES REINICIAR el servicio (con `npm run dev`, o tu orquestador PM2 / NSSM en Windows) para que el cambio aplique en el sistema.
+> Siempre que ejecutes un comando para **Generar/Eliminar Tokens, Cambiar Puertos, Modificar CORS o Cambiar Directorios**, DEBES REINICIAR el servicio (con `npm run dev`, o tu orquestador PM2 / NSSM en Windows) para que el cambio aplique en el sistema.

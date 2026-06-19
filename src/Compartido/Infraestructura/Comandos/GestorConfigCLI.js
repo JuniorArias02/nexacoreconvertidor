@@ -71,6 +71,21 @@ class GestorConfigAppService {
         console.log('⚠️ ALERTA: Debes reiniciar el servidor para aplicar el cambio.\n');
     }
 
+    setTempDir(ruta) {
+        if (!ruta) {
+            console.error('\n❌ ERROR: Debes proporcionar una ruta válida para los archivos temporales.');
+            console.error('💡 Uso: npm run config:tempdir "F:\\temp_node"\n');
+            return;
+        }
+        
+        this.repo.guardar('LIBREOFFICE_TEMP_DIR', ruta);
+        
+        console.log('\n==================================');
+        console.log(`✅ DIRECTORIO TEMPORAL ACTUALIZADO A: ${ruta}`);
+        console.log('==================================');
+        console.log('⚠️ ALERTA: Debes reiniciar el servidor para aplicar el cambio.\n');
+    }
+
     listCors() {
         const corsStr = this.repo.obtener('CORS_ORIGENES_PERMITIDOS') || '';
         const origenes = corsStr.split(',').filter(Boolean);
@@ -144,6 +159,8 @@ const parametro = process.argv[4];
 
 if (entidad === 'port' && accion === 'set') {
     app.setPort(parametro);
+} else if (entidad === 'tempdir' && accion === 'set') {
+    app.setTempDir(parametro);
 } else if (entidad === 'cors') {
     if (accion === 'list') app.listCors();
     else if (accion === 'add') app.addCors(parametro);

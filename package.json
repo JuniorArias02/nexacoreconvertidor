@@ -11,6 +11,7 @@
     "token:generate": "node src/Compartido/Infraestructura/Comandos/GestorTokensCLI.js generate",
     "token:delete": "node src/Compartido/Infraestructura/Comandos/GestorTokensCLI.js delete",
     "config:port": "node src/Compartido/Infraestructura/Comandos/GestorConfigCLI.js port set",
+    "config:tempdir": "node src/Compartido/Infraestructura/Comandos/GestorConfigCLI.js tempdir set",
     "cors:list": "node src/Compartido/Infraestructura/Comandos/GestorConfigCLI.js cors list",
     "cors:add": "node src/Compartido/Infraestructura/Comandos/GestorConfigCLI.js cors add",
     "cors:remove": "node src/Compartido/Infraestructura/Comandos/GestorConfigCLI.js cors remove"

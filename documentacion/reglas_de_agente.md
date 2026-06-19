@@ -39,9 +39,11 @@ Este documento define las reglas de comportamiento y arquitectura para los agent
 ## 7. Rendimiento y Concurrencia (Conversiones)
 - **No bloquear el Event Loop**: Node.js es monohilo. Al ejecutar procesos pesados del sistema operativo (como conversiones de LibreOffice a PDF), estas operaciones deben ser siempre asíncronas (`async/await` y Promesas).
 - **Limpieza de Recursos**: Si por alguna razón un archivo debe ser escrito en disco temporalmente para la conversión, el sistema DEBE garantizar su eliminación inmediata (tanto del archivo original como del generado) en un bloque `finally`, ocurra o no un error en el proceso.
+- **Gestión de Espacio Temporal**: En entornos de producción con alto volumen (como Windows Server), LibreOffice puede colapsar el disco C: creando archivos temporales. Para evitar el error `ENOSPC: no space left on device`, se debe enrutar siempre el perfil de usuario temporal y la carpeta temp hacia un disco de mayor capacidad utilizando el comando CLI `npm run config:tempdir` (el cual ajustará la variable de entorno `LIBREOFFICE_TEMP_DIR`).
 
 ## 8. WebSockets y Telemetría
 - **Aislamiento**: La lógica de emisión de eventos de telemetría (Socket.io) no debe acoplarse con la lógica pura de negocio. Debe inyectarse como un servicio de infraestructura al caso de uso, respetando el principio de Inversión de Dependencias.
 
 ## 9. Despliegue y Ejecución
 - **Entorno de Producción**: El microservicio está diseñado para correr detrás de un administrador de procesos (como PM2 o Servicios de Windows) apuntando al archivo principal (`src/servidor.js`). Los scripts de NPM (`npm run dev`) están prohibidos para despliegues de producción.
+
