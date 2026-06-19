@@ -61,7 +61,7 @@ const convertirAsync = (buffer, formato, filtro) => {
                 fs.mkdirSync(tempDirCustom, { recursive: true });
             }
             options.tmpOptions = {
-                dir: tempDirCustom
+                tmpdir: tempDirCustom
             };
             options.execOptions.env = {
                 ...process.env,
